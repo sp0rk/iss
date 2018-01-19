@@ -1,28 +1,24 @@
-// This file is distributed under the terms of the MIT license, (c) the KSLib team
 clearscreen.
 SAS on.
 set seekAlt to 50.
 
-print "A simple test of libPID.".
+print "A simulation of hovering.".
 print "Does a hover script at " + seekAlt + "m AGL.".
 print " ".
-print "  Try flying around with WASD while it hovers.".
-print "  (steering is unlocked. under your control.".
+print "  You can fly it around if you wish.".
+print "  but don't for the sake of simulation".
 print " ".
 print "  Keys:".
 print "     Action Group 1 : -10 hover altitude".
 print "     Action Group 2 :  -1 hover altitude".
 print "     Action Group 3 :  +1 hover altitude".
 print "     Action Group 4 : +10 hover altitude".
-print "     LANDING LEGS   : Deploy to exit script".
+print "     Action Group 10:     exit script".
 print " ".
 print " Seek ALT:RADAR = ".
 print "  Cur ALT:RADAR = ".
 print " ".
 print "       Throttle = ".
-
-// load the functions I'm using:
-run "lib_PID".
 
 on ag1 { set seekAlt to seekAlt -10. preserve. }.
 on ag2 { set seekAlt to seekAlt - 1. preserve. }.
@@ -31,25 +27,19 @@ on ag4 { set seekAlt to seekAlt +10. preserve. }.
 
 set ship:control:pilotmainthrottle to 0.
 
-// hit "stage" until there's an active engine:
 until ship:availablethrust > 0 {
   wait 0.5.
   stage.
 }.
 
-// Call to update the display of numbers:
 function display_block {
-  parameter startCol, startRow. // define where the block of text should be positioned
+  parameter startCol, startRow. 
 
   print round(seekAlt,2) + "m    " at (startCol,startRow).
   print round(alt:radar,2) + "m    " at (startCol,startRow+1).
   print round(myth,3) + "      " at (startCol,startRow+3).
 }.
 
-
-// thOffset is how far off from midThrottle to be.
-// It's the value I'll be letting the PID controller
-// adjust for me.
 set myTh to 0.
 
 lock throttle to myTh.
@@ -57,13 +47,11 @@ lock throttle to myTh.
 SET MYSTEER TO HEADING(0,90).
 LOCK STEERING TO MYSTEER.
 
+set kp to 0.4.
+set ki to 0.25.
+set kd to 0.5.
 
-
-set kp to 0.25.
-set ki to 0.001.
-set kd to 0.05.
-
-set hoverPID to PIDLOOP( kp, ki, kd, 0, 1 ). // Kp, Ki, Kd, min, max control  range vals.
+set hoverPID to PIDLOOP( kp, ki, kd, 0, 1 ).
 set hoverPID:SETPOINT to 50.
 
 set height_log to list().
@@ -95,7 +83,6 @@ until t>=90 {
   wait 0.001.
 }.
 
-// Call to update the display of numbers:
 function display_block {
   parameter startCol, startRow. // define where the block of text should be positioned
 
@@ -105,10 +92,6 @@ function display_block {
 }.
 
 set ship:control:pilotmainthrottle to throttle.
-print "------------------------------".
-print "Releasing control back to you.".
-print "------------------------------".
-
 
 set logger to list().
 logger:add(time_log).

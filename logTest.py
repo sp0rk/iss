@@ -32,8 +32,6 @@ def plot(file, plot_no):
 	plt.plot(times, [0 for t in times], 'y', times, velocities, 'g')
 	plt.ylabel('Vertical speed [m/s]')
 
-	# plt.show()
-
 def plot_latest(files):
 	latest_file = max(files, key=os.path.getctime)
 	plot(latest_file, 1)
