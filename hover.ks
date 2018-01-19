@@ -60,8 +60,8 @@ LOCK STEERING TO MYSTEER.
 
 
 set kp to 0.5.
-set ki to 0.
-set kd to 0.
+set ki to 0.25.
+set kd to 0.5.
 
 set hoverPID to PIDLOOP( kp, ki, kd, 0, 1 ). // Kp, Ki, Kd, min, max control  range vals.
 set hoverPID:SETPOINT to 50.
